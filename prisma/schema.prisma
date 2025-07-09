@@ -14,124 +14,124 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id              String      @id @default(cuid())
+  id              String   @id @default(cuid())
   name            String
-  email           String      @unique
+  password        String
+  email           String   @unique
   profile_picture String?
-  createdAt       DateTime    @default(now()) @map("created_at")
+  createdAt       DateTime @default(now()) @map("created_at")
 
   // relations
-  characters      Character[] @relation("UserCharacters")
-  cities          City[]      @relation("UserCities")
-  sites           Site[]      @relation("UserSites")
-  chapters        Chapter[]   @relation("UserChapters")
+  characters Character[] @relation("UserCharacters")
+  cities     City[]      @relation("UserCities")
+  sites      Site[]      @relation("UserSites")
+  chapters   Chapter[]   @relation("UserChapters")
 }
 
 model Character {
-  id         String    @id @default(cuid())
-  name       String
-  desc       String
-  picture    String?
-  createdAt  DateTime  @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  name      String
+  desc      String
+  picture   String?
+  createdAt DateTime @default(now()) @map("created_at")
 
   // foreign key
-  creatorId  String
-  creator    User      @relation("UserCharacters", fields: [creatorId], references: [id])
-  
+  creatorId String
+  creator   User   @relation("UserCharacters", fields: [creatorId], references: [id])
+
   // scenes in which this character appears
   sceneDetails SceneDetail[]
 }
 
 model City {
-  id           String  @id @default(cuid())
-  name         String
-  desc         String?
-  xCordStart   Int     @map("x_cord_start")
-  yCordStart   Int     @map("y_cord_start")
-  xCordEnd     Int     @map("x_cord_end")
-  yCordEnd     Int     @map("y_cord_end")
-  picture      String?
-  
+  id         String  @id @default(cuid())
+  name       String
+  desc       String?
+  xCordStart Int     @map("x_cord_start")
+  yCordStart Int     @map("y_cord_start")
+  xCordEnd   Int     @map("x_cord_end")
+  yCordEnd   Int     @map("y_cord_end")
+  picture    String?
+
   // foreign key
-  creatorId    String
-  creator      User      @relation("UserCities", fields: [creatorId], references: [id])
-  
+  creatorId String
+  creator   User   @relation("UserCities", fields: [creatorId], references: [id])
+
   // sites in this city
-  sites        Site[]
+  sites Site[]
 }
 
 model Site {
-  id           String      @id @default(cuid())
-  name         String
-  desc         String?
-  xCordStart   Int         @map("x_cord_start")
-  yCordStart   Int         @map("y_cord_start")
-  xCordEnd     Int         @map("x_cord_end")
-  yCordEnd     Int         @map("y_cord_end")
-  type         String?
-  picture      String?
-  
-  // foreign keys
-  cityId       String
-  creatorId    String?
+  id         String  @id @default(cuid())
+  name       String
+  desc       String?
+  xCordStart Int     @map("x_cord_start")
+  yCordStart Int     @map("y_cord_start")
+  xCordEnd   Int     @map("x_cord_end")
+  yCordEnd   Int     @map("y_cord_end")
+  type       String?
+  picture    String?
 
-  city         City        @relation(fields: [cityId], references: [id])
-  creator      User?       @relation("UserSites", fields: [creatorId], references: [id])
-  
+  // foreign keys
+  cityId    String
+  creatorId String?
+
+  city    City  @relation(fields: [cityId], references: [id])
+  creator User? @relation("UserSites", fields: [creatorId], references: [id])
+
   // multiple pictures per site
-  pictures     SitePicture[]
+  pictures SitePicture[]
 }
 
 model SitePicture {
-  id       String   @id @default(cuid())
-  name     String?
-  desc     String?  @map("descs")
-  picture  String?
+  id      String  @id @default(cuid())
+  name    String?
+  desc    String? @map("descs")
+  picture String?
 
   // foreign key
-  siteId   String
-  site     Site     @relation(fields: [siteId], references: [id])
+  siteId String
+  site   Site   @relation(fields: [siteId], references: [id])
 }
 
 model Chapter {
-  id             String    @id @default(cuid())
-  chapterNumber  Int       @map("chapter_number")
-  title          String
-
-  // foreign key
-  creatorId      String
-  creator        User      @relation("UserChapters", fields: [creatorId], references: [id])
-
-  // scenes under this chapter
-  scenes         Scene[]
-}
-
-model Scene {
-  id            String    @id @default(cuid())
-  sceneNumber   Int       @map("scene_number")
+  id            String @id @default(cuid())
+  chapterNumber Int    @map("chapter_number")
   title         String
 
   // foreign key
-  chapterId     String
-  chapter       Chapter   @relation(fields: [chapterId], references: [id])
+  creatorId String
+  creator   User   @relation("UserChapters", fields: [creatorId], references: [id])
+
+  // scenes under this chapter
+  scenes Scene[]
+}
+
+model Scene {
+  id          String @id @default(cuid())
+  sceneNumber Int    @map("scene_number")
+  title       String
+
+  // foreign key
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
 
   // scene details
-  details       SceneDetail[]
+  details SceneDetail[]
 }
 
 model SceneDetail {
-  id             String   @id @default(cuid())
-  subsceneNumber Int      @map("subscene_number")
+  id             String  @id @default(cuid())
+  subsceneNumber Int     @map("subscene_number")
   dialogue       String
-  soundFile      String?  @map("sound_file")
+  soundFile      String? @map("sound_file")
   picture        String?
 
   // foreign keys
-  sceneId        String
-  characterId    String
+  sceneId     String
+  characterId String
 
-  scene          Scene    @relation(fields: [sceneId], references: [id])
-  character      Character @relation(fields: [characterId], references: [id])
+  scene     Scene     @relation(fields: [sceneId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
 }
