@@ -7,7 +7,7 @@ export async function POST(request: NextRequest, response: any) {
     let reqBody = await request.json();
     const session = await auth()
 
-    const newCity = await prisma.city.create({
+    const newLandscape = await prisma.landscape.create({
         data: {
             name: reqBody.name,
             desc: reqBody.desc || null,
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest, response: any) {
 
     return NextResponse.json({
       status: "success",
-      message: "A new city created successfully",
-      data: newCity,
+      message: "A new landscape created successfully",
+      data: newLandscape,
     });
   } catch (e) {
     console.log("An error occurred:", e);

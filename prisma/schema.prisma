@@ -24,7 +24,7 @@ model User {
 
   // relations
   characters Character[] @relation("UserCharacters")
-  cities     City[]      @relation("UserCities")
+  landscapes    Landscape[]      @relation("UserLandscapes")
   sites      Site[]      @relation("UserSites")
   chapters   Chapter[]   @relation("UserChapters")
 }
@@ -44,7 +44,7 @@ model Character {
   sceneDetails SceneDetail[]
 }
 
-model City {
+model Landscape {
   id         String  @id @default(cuid())
   name       String
   desc       String?
@@ -56,7 +56,7 @@ model City {
 
   // foreign key
   creatorId String
-  creator   User   @relation("UserCities", fields: [creatorId], references: [id])
+  creator   User   @relation("UserLandscapes", fields: [creatorId], references: [id])
 
   // sites in this city
   sites Site[]
@@ -74,10 +74,10 @@ model Site {
   picture    String?
 
   // foreign keys
-  cityId    String
+  landscapeId    String
   creatorId String?
 
-  city    City  @relation(fields: [cityId], references: [id])
+  landscape    Landscape  @relation(fields: [landscapeId], references: [id])
   creator User? @relation("UserSites", fields: [creatorId], references: [id])
 
   // multiple pictures per site
